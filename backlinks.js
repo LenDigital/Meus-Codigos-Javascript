@@ -1,43 +1,57 @@
-<script>
-    function addBacklinks() {
-    var backlinks = {
-        "Dicas e Tutoriais": [
-    {title: "Dicas e Tutoriais - Aprenda Novas Habilidades", url: "https://www.lendigital.site/search/label/Dicas%20e%20Tutoriais" }
-    ],
-    "Empreendedorismo": [
-    {title: "Empreendedorismo - Como Começar seu Negócio", url: "https://www.lendigital.site/search/label/Empreendedorismo" }
-    ]
-        // Continue com outras categorias...
-    };
+// Definição das categorias e links
+const categories = {
+    'Dicas e Tutoriais': 'https://www.lendigital.site/search/label/Dicas%20e%20Tutoriais',
+    'Empreendedorismo': 'https://www.lendigital.site/search/label/Empreendedorismo',
+    'Tendências e Notícias': 'https://www.lendigital.site/search/label/Tend%C3%AAncias%20e%20Not%C3%ADcias',
+    'Tecnologia': 'https://www.lendigital.site/search/label/Tecnologia',
+    'Trabalho Online': 'https://www.lendigital.site/search/label/Trabalho%20Online',
+    'Redes Sociais': 'https://www.lendigital.site/search/label/Redes%20Sociais',
+    'Marketing': 'https://www.lendigital.site/search/label/Marketing'
+};
 
-    // Obter a categoria do artigo
-    var category = document.body.getAttribute('data-category');
-    if (!category || !backlinks[category]) return;
+// Função para adicionar backlinks automaticamente
+async function addBacklinks() {
+    setTimeout(() => {
+        const posts = document.querySelectorAll('.post-body'); // Seleciona o corpo do artigo
 
-    // Selecionar o local onde os backlinks serão inseridos
-    var contentElement = document.querySelector('.post-body');
-    if (!contentElement) return;
+        posts.forEach(post => {
+            const paragraphs = post.querySelectorAll('p'); // Encontra os parágrafos no artigo
+            if (paragraphs.length >= 2) {
+                const category = post.querySelector('.post-labels a'); // Encontra a categoria do post
+                if (category) {
+                    const categoryName = category.innerText;
+                    if (categories[categoryName]) {
+                        const backlink = document.createElement('a');
+                        backlink.href = categories[categoryName];
+                        backlink.innerText = `Leia mais sobre ${categoryName}`;
+                        backlink.style.display = 'block';
+                        backlink.style.marginTop = '15px';
+                        paragraphs[1].after(backlink); // Adiciona o backlink após o segundo parágrafo
+                    }
+                }
 
-    // Criar o bloco de backlinks
-    var backlinksContainer = document.createElement('div');
-    backlinksContainer.style = "margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px;";
+                // Tenta obter o título do artigo
+                const titleElement = document.querySelector('.post-title'); // Título do artigo
+                const titleText = titleElement ? titleElement.innerText : 'Título não encontrado';
 
-    var titleElement = document.createElement('h3');
-    titleElement.innerText = 'Leia também:';
-    backlinksContainer.appendChild(titleElement);
+                // Tenta obter a descrição do artigo
+                const descriptionElement = post.querySelector('.post-snippet') || post.querySelector('.post-body'); // Descrição do artigo
+                const descriptionText = descriptionElement ? descriptionElement.innerText : 'Descrição não encontrada';
 
-    backlinks[category].forEach(function(link) {
-        var backlinkElement = document.createElement('p');
-    backlinkElement.innerHTML = '<a href="' + link.url + '" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">' + link.title + '</a>';
-    backlinksContainer.appendChild(backlinkElement);
-    });
+                // Tenta obter a imagem do artigo
+                const imageElement = post.querySelector('img'); // Primeira imagem encontrada
+                const imageUrl = imageElement ? imageElement.src : '';
 
-    // Inserir após o segundo parágrafo
-    var paragraphs = contentElement.querySelectorAll('p');
-    if (paragraphs.length >= 2) {
-        var secondParagraph = paragraphs[1];
-    contentElement.insertBefore(backlinksContainer, secondParagraph.nextSibling);
-    }
-}
-    document.addEventListener('DOMContentLoaded', addBacklinks);
-</script>
+                // Exibe as informações no console para debug
+                console.log("Título:", titleText);
+                console.log("Descrição:", descriptionText);
+                console.log("Imagem:", imageUrl);
+
+                // Adiciona as informações ao início do artigo
+                const infoBox = document.createElement('div');
+                infoBox.innerHTML = `
+            <h3>${titleText}</h3>
+            <p>${descriptionText}</p>
+            ${imageUrl ? `<img src="${imageUrl}" alt="${titleText}" style="max-width: 100%; height: auto;">` : ''}
+     
+  
