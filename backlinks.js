@@ -1,4 +1,4 @@
-// Defina as categorias e links dos seus backlinks
+// Definição das categorias e links
 const categories = {
     'Dicas e Tutoriais': 'https://www.lendigital.site/search/label/Dicas%20e%20Tutoriais',
     'Empreendedorismo': 'https://www.lendigital.site/search/label/Empreendedorismo',
@@ -9,38 +9,41 @@ const categories = {
     'Marketing': 'https://www.lendigital.site/search/label/Marketing'
 };
 
-// Função para adicionar backlinks aos artigos
+// Função para adicionar backlinks automaticamente
 async function addBacklinks() {
-    // Selecione todos os artigos existentes na página
-    const posts = document.querySelectorAll('.post'); // Alterar o seletor conforme o layout do seu blog
+    // Espera 1 segundo para garantir que os artigos estejam carregados
+    setTimeout(() => {
+        // Seleciona todos os artigos no corpo do post
+        const posts = document.querySelectorAll('.post-body');
 
-    // Para cada artigo encontrado
-    posts.forEach(post => {
-        // Encontre o conteúdo do artigo (parágrafos)
-        const paragraphs = post.querySelectorAll('p');
+        posts.forEach(post => {
+            // Encontra todos os parágrafos do artigo
+            const paragraphs = post.querySelectorAll('p');
 
-        if (paragraphs.length >= 2) {
-            // Pegue a categoria do artigo (ajustar conforme o modelo do seu Blogger)
-            const category = post.querySelector('.post-labels a');
-            if (category) {
-                const categoryName = category.innerText;
+            if (paragraphs.length >= 2) {
+                // Encontra o link da categoria do post
+                const category = post.querySelector('.post-labels a');
 
-                // Se a categoria do artigo estiver nas categorias definidas
-                if (categories[categoryName]) {
-                    // Crie o elemento de backlink
-                    const backlink = document.createElement('a');
-                    backlink.href = categories[categoryName];
-                    backlink.innerText = `Leia mais sobre ${categoryName}`;
-                    backlink.style.display = 'block';
-                    backlink.style.marginTop = '15px';
+                if (category) {
+                    const categoryName = category.innerText;
 
-                    // Insira o backlink após o segundo parágrafo
-                    paragraphs[1].after(backlink);
+                    // Verifica se a categoria do post está definida no objeto 'categories'
+                    if (categories[categoryName]) {
+                        // Cria o backlink
+                        const backlink = document.createElement('a');
+                        backlink.href = categories[categoryName];
+                        backlink.innerText = `Leia mais sobre ${categoryName}`;
+                        backlink.style.display = 'block';
+                        backlink.style.marginTop = '15px';
+
+                        // Adiciona o backlink após o segundo parágrafo
+                        paragraphs[1].after(backlink);
+                    }
                 }
             }
-        }
-    });
+        });
+    }, 1000); // Aguarda 1 segundo para garantir que todos os artigos estejam carregados
 }
 
-// Execute a função quando o conteúdo estiver totalmente carregado
-document.addEventListener('DOMContentLoaded', addBacklinks);
+// Chama a função para adicionar os backlinks
+addBacklinks();
