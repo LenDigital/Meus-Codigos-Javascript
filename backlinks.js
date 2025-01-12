@@ -1,59 +1,46 @@
-<script>
-// Função para adicionar backlinks automáticos com base na categoria
+// Defina as categorias e links dos seus backlinks
+const categories = {
+    'Dicas e Tutoriais': 'https://www.lendigital.site/search/label/Dicas%20e%20Tutoriais',
+    'Empreendedorismo': 'https://www.lendigital.site/search/label/Empreendedorismo',
+    'Tendências e Notícias': 'https://www.lendigital.site/search/label/Tend%C3%AAncias%20e%20Not%C3%ADcias',
+    'Tecnologia': 'https://www.lendigital.site/search/label/Tecnologia',
+    'Trabalho Online': 'https://www.lendigital.site/search/label/Trabalho%20Online',
+    'Redes Sociais': 'https://www.lendigital.site/search/label/Redes%20Sociais',
+    'Marketing': 'https://www.lendigital.site/search/label/Marketing'
+};
+
+// Função para adicionar backlinks aos artigos
 async function addBacklinks() {
-    // Obter a categoria do artigo atual
-    const category = document.body.getAttribute('data-category'); // Ajustar para o atributo correto no seu template
+    // Selecione todos os artigos existentes na página
+    const posts = document.querySelectorAll('.post'); // Alterar o seletor conforme o layout do seu blog
 
-    if (!category) return; // Se a categoria não estiver definida, não faz nada
+    // Para cada artigo encontrado
+    posts.forEach(post => {
+        // Encontre o conteúdo do artigo (parágrafos)
+        const paragraphs = post.querySelectorAll('p');
 
-    // URL do feed do Blogger para obter os artigos da mesma categoria
-    const feedUrl = `/feeds/posts/default/-/${encodeURIComponent(category)}?alt=json`;
+        if (paragraphs.length >= 2) {
+            // Pegue a categoria do artigo (ajustar conforme o modelo do seu Blogger)
+            const category = post.querySelector('.post-labels a');
+            if (category) {
+                const categoryName = category.innerText;
 
-    try {
-        // Busca os dados do feed do Blogger
-        const response = await fetch(feedUrl);
-        const data = await response.json();
+                // Se a categoria do artigo estiver nas categorias definidas
+                if (categories[categoryName]) {
+                    // Crie o elemento de backlink
+                    const backlink = document.createElement('a');
+                    backlink.href = categories[categoryName];
+                    backlink.innerText = `Leia mais sobre ${categoryName}`;
+                    backlink.style.display = 'block';
+                    backlink.style.marginTop = '15px';
 
-        // Obter os artigos do feed
-        const entries = data.feed.entry || [];
-
-        // Verificar se há artigos na categoria
-        if (entries.length > 0) {
-            // Seleciona o local onde os backlinks serão inseridos
-            const contentElement = document.querySelector('.post-body');
-            if (!contentElement) return;
-
-            // Cria o bloco de backlinks
-            const backlinksContainer = document.createElement('div');
-            backlinksContainer.style = "margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px;";
-
-            const titleElement = document.createElement('h3');
-            titleElement.innerText = 'Leia também:';
-            backlinksContainer.appendChild(titleElement);
-
-            // Adicionar até 2 artigos da mesma categoria
-            entries.slice(0, 2).forEach(entry => {
-                const linkTitle = entry.title.$t;
-                const linkUrl = entry.link.find(link => link.rel === "alternate").href;
-
-                const backlinkElement = document.createElement('p');
-                backlinkElement.innerHTML = `<a href="${linkUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">${linkTitle}</a>`;
-                backlinksContainer.appendChild(backlinkElement);
-            });
-
-            // Insere o bloco de backlinks dentro do artigo, logo após o primeiro parágrafo
-            const firstParagraph = contentElement.querySelector('p');
-            if (firstParagraph) {
-                contentElement.insertBefore(backlinksContainer, firstParagraph.nextSibling);
+                    // Insira o backlink após o segundo parágrafo
+                    paragraphs[1].after(backlink);
+                }
             }
         }
-    } catch (error) {
-        console.error("Erro ao carregar os backlinks:", error);
-    }
+    });
 }
 
-// Chama a função para adicionar os backlinks quando o conteúdo for carregado
-document.addEventListener('DOMContentLoaded', function () {
-    addBacklinks();
-});
-</script>
+// Execute a função quando o conteúdo estiver totalmente carregado
+document.addEventListener('DOMContentLoaded', addBacklinks);
