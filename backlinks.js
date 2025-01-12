@@ -11,19 +11,21 @@ const categories = {
 
 // Função para adicionar backlinks automaticamente
 async function addBacklinks() {
-    setTimeout(() => {
+    setTimeout(function () {
         const posts = document.querySelectorAll('.post-body'); // Seleciona o corpo do artigo
 
-        posts.forEach(post => {
+        posts.forEach(function (post) {
             const paragraphs = post.querySelectorAll('p'); // Encontra os parágrafos no artigo
+
             if (paragraphs.length >= 2) {
                 const category = post.querySelector('.post-labels a'); // Encontra a categoria do post
+
                 if (category) {
                     const categoryName = category.innerText;
                     if (categories[categoryName]) {
                         const backlink = document.createElement('a');
                         backlink.href = categories[categoryName];
-                        backlink.innerText = `Leia mais sobre ${categoryName}`;
+                        backlink.innerText = 'Leia mais sobre ' + categoryName;
                         backlink.style.display = 'block';
                         backlink.style.marginTop = '15px';
                         paragraphs[1].after(backlink); // Adiciona o backlink após o segundo parágrafo
@@ -31,7 +33,7 @@ async function addBacklinks() {
                 }
 
                 // Tenta obter o título do artigo
-                const titleElement = document.querySelector('.post-title'); // Título do artigo
+                const titleElement = post.querySelector('.post-title'); // Título do artigo
                 const titleText = titleElement ? titleElement.innerText : 'Título não encontrado';
 
                 // Tenta obter a descrição do artigo
