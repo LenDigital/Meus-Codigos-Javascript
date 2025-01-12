@@ -53,5 +53,12 @@ async function addBacklinks() {
             <h3>${titleText}</h3>
             <p>${descriptionText}</p>
             ${imageUrl ? `<img src="${imageUrl}" alt="${titleText}" style="max-width: 100%; height: auto;">` : ''}
-     
-  
+          `;
+                post.prepend(infoBox); // Adiciona ao início do artigo
+            }
+        });
+    }, 1000); // Aguarda 1 segundo para garantir que todos os artigos estejam carregados
+}
+
+// Chama a função para adicionar os backlinks
+addBacklinks();
