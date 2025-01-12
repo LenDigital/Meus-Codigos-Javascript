@@ -35,21 +35,19 @@ async function addBacklinks() {
                 // Tenta obter o título do artigo
                 const titleElement = post.querySelector('.post-title'); // Título do artigo
                 const titleText = titleElement ? titleElement.innerText : 'Título não encontrado';
+                console.log("Título:", titleText); // Exibe título no console
 
                 // Tenta obter a descrição do artigo
                 const descriptionElement = post.querySelector('.post-snippet') || post.querySelector('.post-body'); // Descrição do artigo
                 const descriptionText = descriptionElement ? descriptionElement.innerText : 'Descrição não encontrada';
+                console.log("Descrição:", descriptionText); // Exibe descrição no console
 
                 // Tenta obter a imagem do artigo
                 const imageElement = post.querySelector('img'); // Primeira imagem encontrada
                 const imageUrl = imageElement ? imageElement.src : '';
+                console.log("Imagem:", imageUrl); // Exibe imagem no console
 
-                // Exibe as informações no console para debug
-                console.log("Título:", titleText);
-                console.log("Descrição:", descriptionText);
-                console.log("Imagem:", imageUrl);
-
-                // Adiciona as informações ao início do artigo
+                // Exibe as informações no artigo
                 const infoBox = document.createElement('div');
                 infoBox.innerHTML = `
             <h3>${titleText}</h3>
