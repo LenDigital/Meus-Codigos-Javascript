@@ -11,34 +11,48 @@ const categories = {
 
 // Função para adicionar backlinks automaticamente
 async function addBacklinks() {
-    // Espera 1 segundo para garantir que os artigos estejam carregados
     setTimeout(() => {
-        // Seleciona todos os artigos no corpo do post
-        const posts = document.querySelectorAll('.post-body');
+        const posts = document.querySelectorAll('.post-body'); // Seleciona o corpo do artigo
 
         posts.forEach(post => {
-            // Encontra todos os parágrafos do artigo
-            const paragraphs = post.querySelectorAll('p');
-
+            const paragraphs = post.querySelectorAll('p'); // Encontra os parágrafos no artigo
             if (paragraphs.length >= 2) {
-                // Encontra o link da categoria do post
-                const category = post.querySelector('.post-labels a');
-
+                const category = post.querySelector('.post-labels a'); // Encontra a categoria do post
                 if (category) {
                     const categoryName = category.innerText;
-
-                    // Verifica se a categoria do post está definida no objeto 'categories'
                     if (categories[categoryName]) {
-                        // Cria o backlink
                         const backlink = document.createElement('a');
                         backlink.href = categories[categoryName];
                         backlink.innerText = `Leia mais sobre ${categoryName}`;
                         backlink.style.display = 'block';
                         backlink.style.marginTop = '15px';
-
-                        // Adiciona o backlink após o segundo parágrafo
-                        paragraphs[1].after(backlink);
+                        paragraphs[1].after(backlink); // Adiciona o backlink após o segundo parágrafo
                     }
+                }
+
+                // Agora vamos tentar adicionar o título e a descrição do artigo
+                const title = document.querySelector('.post-title'); // Título do artigo
+                const description = post.querySelector('.post-snippet'); // Descrição do artigo
+                const image = post.querySelector('img'); // Imagem do artigo (primeira imagem encontrada)
+
+                if (title && description) {
+                    const titleText = title.innerText || 'Carregando título...'; // Título do artigo
+                    const descriptionText = description.innerText || 'Carregando descrição...'; // Descrição do artigo
+                    const imageUrl = image ? image.src : ''; // URL da imagem do artigo
+
+                    // Exibe as informações (caso esteja configurado para isso)
+                    console.log("Título:", titleText);
+                    console.log("Descrição:", descriptionText);
+                    console.log("Imagem:", imageUrl);
+
+                    // Exibe as informações na página, se necessário
+                    const infoBox = document.createElement('div');
+                    infoBox.innerHTML = `
+              <h3>${titleText}</h3>
+              <p>${descriptionText}</p>
+              <img src="${imageUrl}" alt="${titleText}" style="max-width: 100%; height: auto;">
+            `;
+                    post.prepend(infoBox); // Adiciona ao início do artigo
                 }
             }
         });
